@@ -1,0 +1,453 @@
+2018-11-09:	21.62
+	- merge gh#openSUSE/hwinfo#73
+	- update pci and usb ids (fate#326431)
+	- add script to update pci and usb ids
+	- adjust hwinfo know about RISC-V
+	- update git2log script
+	- fix curl commands
+
+2018-10-29:	21.61
+	- merge gh#openSUSE/hwinfo#72
+	- fix id of s-par storage controller (bsc#1107196)
+
+2018-10-17:	21.60
+	- merge gh#openSUSE/hwinfo#71
+	- add network interfaces found on mdio bus (bsc#1018271)
+
+2018-10-12:	21.59
+	- merge gh#openSUSE/hwinfo#70
+	- The location of the S-Par drivers virtual buses has changed
+	  (bsc#1107196)
+
+2018-09-27:	21.58
+	- merge gh#openSUSE/hwinfo#59
+	- ensure udev device links are unique (bsc#1084700)
+
+2018-09-17:	21.57
+	- merge gh#openSUSE/hwinfo#69
+	- check for vmware only when running in a vm (bsc#1105003)
+
+2018-06-28:	21.56
+	- merge gh#openSUSE/hwinfo#66
+	- Add support for RISC-V
+
+2018-06-08:	21.55
+	- merge gh#openSUSE/hwinfo#64
+	- try a more agressive way to catch all usb platform controllers
+	  (bsc#1072450)
+
+2018-06-06:	21.54
+	- merge gh#openSUSE/hwinfo#63
+	- detect ARM HISILICON SAS controller (bsc#1072450)
+
+2018-04-20:	21.53
+	- merge gh#openSUSE/hwinfo#60
+	- detect usb controller in ARM platform device (bsc#1072450)
+	- add xhci interface constant
+
+2018-02-09:	21.52
+	- merge gh#openSUSE/hwinfo#57
+	- add another sanity check on scsi serial id (bsc#1078511)
+
+2018-01-12:	21.51
+	- merge gh#openSUSE/hwinfo#55
+	- Please make CDBISDN_DATE ignore timezone.
+
+2017-10-26:	21.50
+	- merge gh#openSUSE/hwinfo#54
+	- support SMBIOS 3.0 spec (bsc#1062562)
+
+2017-09-12:	21.49
+	- merge gh#openSUSE/hwinfo#52
+	- Ensure /var/lib/hardware/udi exists and with 755 permissions
+
+2017-09-12:	21.48
+	- merge gh#openSUSE/hwinfo#51
+	- sort input files (boo#1041090)
+	- allow to override current time (boo#1047218)
+	- make build reproducible
+
+2017-07-28:	21.47
+	- merge gh#openSUSE/hwinfo#53
+	- really set default timeout to 20s for Video BIOS emulation calls
+	  (bsc#1051076)
+
+2017-05-12:	21.46
+	- merge gh#openSUSE/hwinfo#50
+	- map also alternate video bios entry points (bsc#1033832)
+	- try harder to get the video mode list
+	- add links to technical specifications
+
+2017-05-10:	21.45
+	- merge gh#openSUSE/hwinfo#49
+	- avoid access to video memory (bsc#1033832)
+
+2017-05-08:	21.44
+	- merge gh#openSUSE/hwinfo#48
+	- fix conditional expression in hddb.c (gh#openSUSE/hwinfo#20)
+
+2017-05-08:	21.43
+	- merge gh#openSUSE/hwinfo#47
+	- block i/o access when reading mode list from BIOS (bsc#1033832)
+
+2017-05-04:	21.42
+	- merge gh#openSUSE/hwinfo#46
+	- include updated hd.h in package archive
+	- update pci and usb ids (fate#321448)
+
+2017-05-04:	21.41
+	- remove references to qlogic-firmware (bsc#1036884)
+
+2017-04-26:	21.40
+	- merge gh#openSUSE/hwinfo#45
+	- enhance documentation
+	- small doc changes
+
+2017-04-05:	21.39
+	- merge gh#openSUSE/hwinfo#44
+	- powerpc: support ibmvnic network interfaces (bsc#1031676)
+
+2016-12-05:	21.38
+	- merge gh#openSUSE/hwinfo#42
+	- look for smbios entry point also in efi settings (bsc#1010276)
+	- simplify code in smbios_get_info()
+	- increase version
+
+2016-11-18:	21.37
+	- merge gh#openSUSE/hwinfo#41
+	- look for dmi table also in sysfs (bsc#1010276)
+	- increase version
+
+2016-11-17:	21.36
+	- merge gh#openSUSE/hwinfo#40
+	- add permanent mac address field for network cards (bsc#1007172)
+	- provide also HD_MINOR_VERSION in hd.h header file
+
+2016-11-11:	21.35
+	- merge gh#openSUSE/hwinfo#36
+	- ensure network devices have a bus_id (bsc#1007172)
+
+2016-11-09:	21.34
+	- merge gh#openSUSE/hwinfo#35
+	- update pci ids (bsc#1006818)
+	- update script to parse usb id list correctly
+	- update usb ids
+	- update pci and usb ids (bsc#1006818)
+
+2016-11-09:	21.33
+	- merge gh#openSUSE/hwinfo#33
+	- implement nvdimm support (bsc#970111)
+
+2016-10-20:	21.32
+	- merge gh#openSUSE/hwinfo#32
+	- aarch64: fix detection of usb controllers (bsc#1005428)
+
+2016-09-16:	21.31
+	- merge gh#openSUSE/hwinfo#27
+	- add sdio id list
+	- add support for mmc/sdio devices (bsc#996183)
+	- find parent device
+	- document id data sources
+	- improved comment
+
+2016-07-28:	21.30
+	- merge gh#openSUSE/hwinfo#26
+	- fix input device name detection for usb devices (bsc#989633)
+
+2016-07-14:	21.29
+	- merge gh#openSUSE/hwinfo#25
+	- refine last patch a bit (bsc#960507)
+
+2016-07-13:	21.28
+	- merge gh#openSUSE/hwinfo#24
+	- avoid bogus virtio devices in device listing (bsc#960507)
+
+2016-06-08:	21.27
+	- merge gh#openSUSE/hwinfo#23
+	- clarify hwinfo usage in man page and help text (bsc#982332)
+	- add aliases with '-' for options with '_' (bsc#983004)...
+
+2016-05-30:	21.26
+	- merge gh#openSUSE/hwinfo#22
+	- change type of serial_buf[] to unsigned char (bsc#980819)
+	- add reference to SCSI command specification
+	- change wording for SCSI reference
+
+2016-05-30:	21.25
+	- merge gh#openSUSE/hwinfo#21
+	- Correct comma placement after part-number
+
+2016-04-12:	21.24
+	- merge gh#openSUSE/hwinfo#17
+	- adjust dmi parser to read memory size according to latest smbios
+	  spec (bsc#974737)
+	- merge gh#openSUSE/hwinfo#18
+
+2015-10-09:	21.23
+	- merge gh#openSUSE/hwinfo#15
+	- scsi serial id: read vpd page 0x80 from sysfs, if possible
+	  (bsc#949287)
+
+2015-09-29:	21.22
+	- merge gh#openSUSE/hwinfo#14
+	- Split README into README-legacy and README-hwprobe
+	- Add a general README.md
+	- Convert documentation to markdown
+
+2015-09-17:	21.21
+	- merge gh#openSUSE/hwinfo#12
+	- adjust disk device info gathering after nvme driver change
+	  (bsc#943008)
+
+2015-08-27:	21.20
+	- merge gh#openSUSE/hwinfo#11
+	- read disk model info also via scsi inquiry command (bsc#943008)
+	- update git2log script
+	- watch out: nvme disks are pci devices
+	- add pci ids to nvme devices
+	- udated usb id data from http://www.linux-usb.org/usb.ids
+	- updated pci id data from http://pci-ids.ucw.cz
+	- added some comments
+	- Bsc 943008
+
+2015-08-06:	21.19
+	- update git2log script to create nicer logs
+
+2015-08-06:	21.18
+	- merge gh#openSUSE/hwinfo#10
+	- Expose more properties to all devices in /proc/device-tree/vpd
+
+2015-06-25:	21.17
+	- merge gh#openSUSE/hwinfo#9
+	- hd/manual.c: Include <limits.h> for PATH_MAX
+	- isdn/cdn: don't use stdin as lvalue with freopen()
+	- hd/hd.c: canonicalize_file_name(s) is equivalent to the more
+	  portable realpath(s,NULL)
+	- hd: Use <linux/pci.h> instead of <sys/pci.h>
+	- Fixes for compilation with musl libc
+
+2015-06-15:	21.16
+	- another Makefile fix
+
+2015-06-15:	21.15
+	- fix Makefile typo
+
+2015-06-05:	21.14
+	- merge branch thinred-master
+	- merge branch master
+	- fix spelling errors
+	- update compiler flags
+	- allow to build outside git repository
+	- use pkg-config for dbus
+	- Conflicts: Makefile
+	- adjusting Makefile
+
+2015-06-03:	21.13
+	- merge gh#openSUSE/hwinfo#7
+	- Makefile - use /usr/lib64 by default on x86_64
+	- initial support for detecting monitor via sysfs
+	- dump extra monitor data
+	- refactor monitor detection
+	- increase monitor list size
+	- Collect and print "Week of Manufacture" EDID data
+	- do not print anything to the console
+	- Monitor detection via sysfs
+
+2015-02-27:	21.12
+	- merge gh#openSUSE/hwinfo#6
+	- Update aarch64 cpuinfo parser to handle post-3.19 format
+
+2015-01-07:	21.11
+	- merge gh#openSUSE/hwinfo#5
+	- Add PowerNV platform support
+
+2014-11-26:	21.10
+	- fixed distclean target in Makefile
+
+2014-11-24:	21.9
+	- add arm platform devices
+
+2014-11-07:	21.8
+	- fix bashisms in getsysinfo script
+	- mark gen-hwcfg-disk.sh as shell, no bash script
+
+2014-10-13:	21.7
+	- added 'archive' Makefile target
+	- updated git2log script
+
+2014-08-15:	21.6
+	- create floppy entry only if there really is a floppy device
+	  (bnc#883465)
+
+2014-05-27:	21.5
+	- make ethtool private flags tri-state: (unset, false, true)
+
+2014-04-24:	21.4
+	- don't dump netcard eeprom by default (bnc#875021)
+
+2014-03-31:	21.3
+	- merge gh#openSUSE/hwinfo#3
+	- Removed an unnecessary newline from dump_line call. h->rom_id for
+	  IUCV connections already has a newline at the end.
+	- Changed the logic for IUCV detection to only include netiucv type
+	  devices Since /sys/bus/iucv/devices/ contains a "generic" netiucv
+	  entry as well as any activated devices,such as netiucv0, or
+	  netiucv1, the extra logic to add an unactivated device is no
+	  longer needed, so it has been removed.
+
+2014-03-28:	21.2
+	- avoid strcpy() (bnc#870383)
+	- xen vm: use memory settings from /proc/xen/balloon (bnc#867915)
+
+2014-03-24:	21.1
+	- VMWare -> VMware (bnc#536888)
+	- fix type to avoid compiler warning
+	- recognize InfiniBand controller (bnc#645877, bnc#644299,
+	  bnc#639807)
+	- report InfiniBand controller as network controller (bnc#645877,
+	  bnc#644299)
+	- add unisys hypervisor bus info (bnc#678966)
+	- add id to Validity fingerprint sensor (bnc#719202)
+	- s390: recognize model 2 OSA Express interfaces (bnc#720082)
+	- use 'cp -x' in getsysinfo (bnc#760240)
+	- adding fingerprint reader (bnc#793928)
+	- s390: add some virtio device IDs (bnc#807532)
+	- show Consistant Device Name (CDN) as Device Name
+
+2013-11-27:	21.0
+	- merge gh#openSUSE/hwinfo#2
+	- Add support for m68k
+	- update pci id list (bnc#813172)
+	- read and add ethtool private flags (bnc 841170)
+
+2013-08-20:	20.2
+	- merge gh#openSUSE/hwinfo#1
+	- Fix sizing error in memset() call
+	- Remove various unused variables
+	- Add support for AArch64
+	- AArch64 support
+
+2013-01-09:	20.1
+	- Boris Manojlovic: add missing man pages
+
+2012-05-22:	20.0
+	- change multi-interface detection to work with old sysfs layout
+	  (bnc#739368, bnc#693090)
+
+2012-02-09:	19.1
+	- detect fcoe disks (bnc#725134)
+	- Use new and correct sysfs driver names:
+	- hv_storvsc instead of storvsc
+	- hv_netvsc instead of netvsc Remove blkvsc, the driver was merged
+	  into hv_storvsc
+	- updated git related scripts
+	- basic arm support
+
+2011-10-07:	19.0
+	- show disk capacity in GB
+	- added .gitignore files
+	- updated .gitignore
+	- added support for detecting USB joysticks
+	- joystick: detect and report number of axes and buttons
+	- added NULL checks
+	- cleanup - removed unused variables
+	- added Gameport bus, detect gameport joysticks
+	- USB joystick fixes
+	- fixed typo
+	- fix network detection if several interfaces are attached to a
+	  single pci function (bnc#693090)
+	- new version
+	- new new version
+
+2011-03-11:	18.5
+	- check for battery, too, to decide on notebook (bnc#678456)
+
+2011-03-08:	18.4
+	- avoid potential NULL pointer reference (bnc#677686)
+
+2011-02-16:	18.3
+	- support Draytech miniVigor 128 ISDN (bnc#663288)
+
+2011-02-16:	18.2
+	- fix SPARC compile fixes
+	- add vmbus storage controllers (bnc#654959)
+	- support Validity fingerprint sensor (bnc#644149)
+
+2010-08-25:	18.1
+	- added more fingerprint sensors
+
+2010-08-17:	18.0
+	- added fingerprint sensor (bnc#528596)
+	- parse id files in /var/lib/hardware/ids
+
+2010-06-22:	17.3
+	- assume notebook if there's a track point or touch pad (bnc#591703)
+
+2010-06-07:	17.2
+	- fix NULL pointer bug (bnc#610454)
+
+2010-05-21:	17.1
+	- detect formfactor without hal (bnc#591703)
+
+2010-03-17:	17.0
+	- removed VERSION
+	- remove hal dependency
+
+2010-03-15:	16.13
+	- fix compile on non-suse systems
+	- create VERSION and changelog from git repo
+	- fix memory size detection (bnc#588028)
+
+2010-02-12:	16.12
+	- recognize agere modem lines (bnc#578286)
+
+2010-02-12:	16.11
+	- fix device renaming detection (bnc#574442)
+	- more cpu features (bnc#578994)
+
+2009-10-09:	16.10
+	- fix changelog
+	- made kernel log parser aware of time stamps (bnc#544269)
+
+2009-09-30:	16.9
+	- recognize usb auto & smartcard devices (bnc#290279)
+	- Skip interfaces that have the SLAVE flag set
+
+2009-09-28:	16.8
+	- fix video memory mapping (bnc#539227)
+
+2009-09-21:	16.7
+	- map video memory writable (bnc#539227)
+	- fix memory leak when run as non-root (bnc#519015)
+	- updated dvb & tv card info (bnc#465139)
+	- updated pci ids
+
+2009-09-16:	16.6
+	- check for ddc capabilities before issuing a ddc call (suggested
+	  by Anssi Hannula)
+
+2009-08-03:	16.5
+	- revert --log patch from v16.3; leads to all kinds of problems
+	  (bnc#525223)
+
+2009-07-29:	16.4
+	- support NPIV (bnc#501312)
+	- added some ISDN devices (bnc#234529)
+
+2009-06-24:	16.3
+	- fix build when as-needed is a default linker option
+	- log without other options assumes --all (bnc#243103)
+	- rewrote man page, help text & README (bnc#178662)
+
+2009-06-15:	16.2
+	- fix build on non-x86 archs
+
+2009-06-09:	16.1
+	- rewrite logging functions
+	- better probing flag handling
+	- rewrite monitor detection to use libx86emu
+	- remove old x86 emulator files
+	- remove some obsolete code
+	- better control over x86emu logging
+	- new version
+

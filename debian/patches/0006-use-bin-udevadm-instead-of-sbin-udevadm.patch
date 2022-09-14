@@ -1,0 +1,44 @@
+From: Tomasz Buchert <tomasz@debian.org>
+Date: Tue, 19 Sep 2017 00:29:32 +0200
+Subject: use /bin/udevadm instead of /sbin/udevadm
+
+---
+ src/hd/hd_int.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/src/hd/hd_int.h b/src/hd/hd_int.h
+index 438963b..dfcea89 100644
+--- a/src/hd/hd_int.h
++++ b/src/hd/hd_int.h
+@@ -43,7 +43,7 @@
+ #define PROG_RMMOD		"/sbin/rmmod"
+ #define PROG_CARDCTL		"/sbin/cardctl"
+ #define PROG_UDEVINFO		"/usr/bin/udevinfo"
+-#define PROG_UDEVADM		"/sbin/udevadm"
++#define PROG_UDEVADM		"/bin/udevadm"
+ 
+ #define KLOG_BOOT		"/var/log/boot.msg"
+ #define ISAPNP_CONF		"/etc/isapnp.conf"
+@@ -109,7 +109,7 @@ char *canon_str(char *, int);
+ int hex(char *string, int digits);
+ 
+ void hd_log(hd_data_t *hd_data, char *buf, ssize_t len);
+-void hd_log_printf(hd_data_t *hd_data, char *format, ...) __attribute__ ((format (printf, 2, 3)));            
++void hd_log_printf(hd_data_t *hd_data, char *format, ...) __attribute__ ((format (printf, 2, 3)));
+ void hd_log_hex(hd_data_t *hd_data, int with_ascii, unsigned data_len, unsigned char *data);
+ 
+ void str_printf(char **buf, int offset, char *format, ...) __attribute__ ((format (printf, 3, 4)));
+@@ -221,7 +221,7 @@ hal_prop_t *hal_get_bool(hal_prop_t *prop, const char *key);
+ hal_prop_t *hal_get_int32(hal_prop_t *prop, const char *key);
+ hal_prop_t *hal_get_str(hal_prop_t *prop, const char *key);
+ hal_prop_t *hal_get_list(hal_prop_t *prop, const char *key);
+-char *hal_get_useful_str(hal_prop_t *prop, const char *key);       
++char *hal_get_useful_str(hal_prop_t *prop, const char *key);
+ 
+ hal_device_t *hal_find_device(hd_data_t *hd_data, char *udi);
+ hal_prop_t *hal_add_new(hal_prop_t **prop);
+@@ -241,4 +241,3 @@ str_list_t *sort_str_list(str_list_t *sl0, int (*cmp_func)(const void *, const v
+ #ifdef __cplusplus
+ }
+ #endif
+-

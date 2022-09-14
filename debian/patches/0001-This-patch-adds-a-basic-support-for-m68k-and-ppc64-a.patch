@@ -1,0 +1,166 @@
+From: Tomasz Buchert <tomasz@debian.org>
+Date: Sat, 1 Feb 2014 14:26:41 +0100
+Subject: This patch adds a basic support for m68k and ppc64 architectures.
+
+---
+ src/hd/hd.c | 45 ++++++++++++++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 17 deletions(-)
+
+diff --git a/src/hd/hd.c b/src/hd/hd.c
+index b5c0439..e5c8761 100644
+--- a/src/hd/hd.c
++++ b/src/hd/hd.c
+@@ -156,6 +156,18 @@
+ #define HD_ARCH "riscv"
+ #endif
+ 
++#ifdef __mc68000__
++#define HD_ARCH "m68k"
++#endif
++
++#ifdef __powerpc64__
++#define HD_ARCH "ppc64"
++#endif
++
++#ifdef __sh__
++#define HD_ARCH "sh"
++#endif
++
+ typedef struct disk_s {
+   struct disk_s *next;
+   unsigned crc;
+@@ -898,11 +910,11 @@ void hd_set_probe_feature_hw(hd_data_t *hd_data, hd_hw_item_t item)
+       break;
+ 
+     case hw_hub:
+-      hd_set_probe_feature(hd_data, pr_usb); 
++      hd_set_probe_feature(hd_data, pr_usb);
+       break;
+ 
+     case hw_memory:
+-      hd_set_probe_feature(hd_data, pr_memory); 
++      hd_set_probe_feature(hd_data, pr_memory);
+       break;
+ 
+     case hw_scsi:
+@@ -952,7 +964,7 @@ void hd_set_probe_feature_hw(hd_data_t *hd_data, hd_hw_item_t item)
+     case hw_all:
+       hd_set_probe_feature(hd_data, pr_default);
+       break;
+-    
++
+     case hw_redasd:
+       hd_set_probe_feature(hd_data, pr_block);
+       hd_set_probe_feature(hd_data, pr_block_mods);
+@@ -1010,7 +1022,7 @@ hd_data_t *hd_free_hd_data(hd_data_t *hd_data)
+ 
+   if(hd_data->hddb2[0]) {
+     free_mem(hd_data->hddb2[0]->list);
+-    free_mem(hd_data->hddb2[0]->ids); 
++    free_mem(hd_data->hddb2[0]->ids);
+     free_mem(hd_data->hddb2[0]->strings);
+     hd_data->hddb2[0] = free_mem(hd_data->hddb2[0]);
+   }
+@@ -2030,7 +2042,7 @@ void hd_scan_no_hal(hd_data_t *hd_data)
+ #if defined(__i386__) || defined (__x86_64__) || defined (__ia64__)
+   hd_scan_bios(hd_data);
+ #endif
+-  
++
+   /* before hd_scan_misc(): we need some ppc info later */
+   hd_scan_sys(hd_data);
+ 
+@@ -3880,7 +3892,7 @@ int unload_module(hd_data_t *hd_data, char *module)
+   i = run_cmd(hd_data, cmd);
+ 
+   free_mem(cmd);
+-  
++
+   return i;
+ }
+ 
+@@ -4984,7 +4996,7 @@ int hd_change_config_status(hd_data_t *hd_data, const char *id, hd_status_t stat
+   }
+ 
+   i = hd_write_config(hd_data, hd);
+-  
++
+   hd_free_hd_list(hd);
+ 
+   return i;
+@@ -5126,7 +5138,7 @@ int hd_getdisksize(hd_data_t *hd_data, char *dev, int fd, hd_res_t **geo, hd_res
+   // ADD2LOG("  geo = %p, size = %p\n", *geo, *size);
+ 
+   if(close_fd) close(fd);
+-  
++
+   return status;
+ }
+ 
+@@ -5545,7 +5557,7 @@ int hd_is_shm_ptr(hd_data_t *hd_data, void *ptr)
+     ptr < hd_data->shm.data ||
+     ptr >= hd_data->shm.data + hd_data->shm.used
+   ) return 0;
+-  
++
+   return 1;
+ }
+ 
+@@ -5851,7 +5863,7 @@ str_list_t *hd_module_list(hd_data_t *hd_data, unsigned id)
+   driver_info_t *di;
+ 
+   hd = new_mem(sizeof *hd);
+-  hd->tag.freeit = 1; 
++  hd->tag.freeit = 1;
+ 
+   hd->vendor.id = MAKE_ID(TAG_SPECIAL, 0xf000);
+   hd->device.id = MAKE_ID(TAG_SPECIAL, id);
+@@ -5969,13 +5981,13 @@ int hd_attr_uint(char* attr, uint64_t* u, int base)
+   char *s;
+   uint64_t u2;
+   int ok;
+-  
++
+   if(!(s = attr)) return 0;
+   u2 = strtoull(s, &s, base);
+   ok = !*s || isspace(*s) ? 1 : 0;
+-  
++
+   if(ok && u) *u = u2;
+-  
++
+   return ok;
+ }
+ 
+@@ -6065,7 +6077,7 @@ char* get_sysfs_attr(const char* bus, const char* device, const char* attr)
+ char *get_sysfs_attr_by_path(const char *path, const char *attr)
+ {
+   return get_sysfs_attr_by_path2(path, attr, NULL);
+-}  
++}
+ 
+ 
+ /*
+@@ -6106,7 +6118,7 @@ char *get_sysfs_attr_by_path2(const char *path, const char *attr, unsigned *len)
+   }
+ 
+   return buf;
+-}  
++}
+ 
+ 
+ /*
+@@ -6123,7 +6135,7 @@ int hd_mod_cmp(char *str1, char *str2)
+   for(s = str1; *s; s++) if(*s == '-') *s = '_';
+   for(s = str2; *s; s++) if(*s == '-') *s = '_';
+ 
+-  i = strcmp(str1, str2);  
++  i = strcmp(str1, str2);
+ 
+   free(str1);
+   free(str2);
+@@ -6160,4 +6172,3 @@ str_list_t *sort_str_list(str_list_t *sl0, int (*cmp_func)(const void *, const v
+ 
+ 
+ /** @} */
+-

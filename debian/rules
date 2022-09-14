@@ -1,0 +1,39 @@
+#!/usr/bin/make -f
+# -*- mode: makefile; coding: utf-8 -*-
+
+# export DH_VERBOSE=1
+
+#export DEB_BUILD_MAINT_OPTIONS=hardening=+bindnow,+pie
+DPKG_EXPORT_BUILDFLAGS=1
+include /usr/share/dpkg/architecture.mk
+include /usr/share/dpkg/buildflags.mk
+include /usr/share/dpkg/pkg-info.mk
+
+export LIBDIR=/usr/lib/$(DEB_HOST_MULTIARCH)
+export HWINFO_VERSION=$(DEB_VERSION_UPSTREAM)
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	dh_auto_build --no-parallel
+	dh_auto_build --no-parallel -- doc
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -f VERSION
+
+override_dh_installdocs:
+	dh_installdocs -A README.md README-hwprobe.md README-legacy.md
+
+override_dh_installchangelogs:
+	dh_installchangelogs $(CURDIR)/debian/CHANGELOG
+
+DOCDIR=debian/libhd-doc/usr/share/doc/libhd-doc/html
+override_dh_install-indep:
+	dh_install
+	rm $(DOCDIR)/jquery.js
+	ln -s /usr/share/javascript/jquery/jquery.js $(DOCDIR)/jquery.js
+
+gen-upstream-changelog:
+	bash debian/gen-upstream-changelog.sh $(DEB_VERSION_UPSTREAM)
