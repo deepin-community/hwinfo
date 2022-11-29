@@ -1,6 +1,4 @@
 0001-This-patch-adds-a-basic-support-for-m68k-and-ppc64-a.patch
 0002-TIOCGDEV-is-not-supported-by-the-kernel-therefore-we.patch
 0003-Read-BogoMIPS-from-proc-cpuinfo-as-well.patch
-0004-This-patch-fixes-a-segfault-on-amd64-architecture.patch
-0005-Fix-various-issues-with-the-manpage.patch
-0006-use-bin-udevadm-instead-of-sbin-udevadm.patch
+0006-Use-bin-udevadm-which-is-the-Debian-location.patch

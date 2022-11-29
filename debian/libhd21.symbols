@@ -58,6 +58,7 @@ libhd.so.21 libhd21 #MINVER#
  hal_invalidate@Base 21.0
  hal_invalidate_all@Base 21.0
  has_something_attached@Base 21.0
+ has_subcomponent@Base 21.71
  have_common_res@Base 21.0
  hd_add_driver_data@Base 21.0
  hd_add_id@Base 21.0
@@ -246,6 +247,7 @@ libhd.so.21 libhd21 #MINVER#
  read_block0@Base 21.0
  (arch=ppc64el powerpc)read_devtree_entry@Base 21.14
  read_dir@Base 21.0
+ read_dir_canonical@Base 21.71
  read_file@Base 21.0
  read_klog@Base 21.0
  read_kmods@Base 21.0
@@ -265,6 +267,7 @@ libhd.so.21 libhd21 #MINVER#
  str_list_dup@Base 21.0
  str_printf@Base 21.0
  sub_device_class@Base 21.0
+ subcomponent_list@Base 21.71
  (arch=i386)telesdetect@Base 21.0
  unload_module@Base 21.0
  update_irq_usage@Base 21.0

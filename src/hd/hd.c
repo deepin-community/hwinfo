@@ -156,6 +156,10 @@
 #define HD_ARCH "riscv"
 #endif
 
+#ifdef __loongarch__
+#define HD_ARCH "loongarch"
+#endif
+
 typedef struct disk_s {
   struct disk_s *next;
   unsigned crc;
@@ -2633,6 +2637,28 @@ str_list_t *read_dir(char *dir_name, int type)
 }
 
 
+/*
+ * Read directory, return a list of canonicalized entries with file type 'type'.
+ *
+ * The difference to read_dir() is that symlinks are resolved and the
+ * canonical path within sysfs is returned.
+ */
+str_list_t *read_dir_canonical(char *dir_name, int type)
+{
+  str_list_t *list = read_dir(dir_name, type);
+
+  if(!list) return list;
+
+  for(str_list_t *sl = list; sl; sl = sl->next) {
+    char *tmp = new_str(hd_read_sysfs_link(dir_name, sl->str));
+    free_mem(sl->str);
+    sl->str = tmp;
+  }
+
+  return list;
+}
+
+
 char *hd_read_sysfs_link(char *base_dir, char *link_name)
 {
   char *s = NULL;
@@ -2648,6 +2674,53 @@ char *hd_read_sysfs_link(char *base_dir, char *link_name)
   free_mem(s);
 
   return buf;
+}
+
+
+/*
+ * Return list with all elements in list that are subcomponents of comp.
+ *
+ * If max > 0 at most max elements are returned.
+ *
+ * Note: it must really be a subdirectory or attribute below comp. A
+ * component is *not* a subcomponent of itself.
+ * IOW: the path in list must really be longer than comp to qualify.
+ */
+str_list_t *subcomponent_list(str_list_t *list, char *comp, int max)
+{
+  str_list_t *sub_list = NULL;
+
+  if(!list || !comp) return sub_list;
+
+  size_t comp_len = strlen(comp);
+
+  for(str_list_t *sl = list; sl; sl = sl->next) {
+    if(
+      !strncmp(sl->str, comp, comp_len) &&
+      sl->str[comp_len] == '/'
+    ) {
+      add_str_list(&sub_list, sl->str);
+      if(!--max) return sub_list;
+    }
+  }
+
+  return sub_list;
+}
+
+
+/*
+ * Check if list contains a subcomponent of comp.
+ *
+ * Returns 0 (no) or 1 (yes).
+ */
+int has_subcomponent(str_list_t *list, char *comp)
+{
+  str_list_t *sl = subcomponent_list(list, comp, 1);
+  if(!sl) return 0;
+
+  free_str_list(sl);
+
+  return 1;
 }
 
 
@@ -3150,42 +3223,27 @@ int hd_is_sgi_altix(hd_data_t *hd_data)
 }
 
 
-
-
 /*
  * check for xen hypervisor
+ *
+ * see https://www.sandpile.org/x86/cpuid.htm#level_4000_0000h
  */
 int hd_is_xen(hd_data_t *hd_data)
 {
 #if defined(__i386__) || defined(__x86_64__)
 
-  char signature[13];
-  unsigned u, foo;
+  unsigned eax, ebx, ecx, edx;
 
   __asm__(
-#ifdef __i386__
-    "push %%ebx\n\t"
-    "cpuid\n\t"
-    "mov %%ebx,(%%esi)\n\t"
-    "mov %%ecx,4(%%esi)\n\t"
-    "mov %%edx,8(%%esi)\n\t"
-    "pop %%ebx"
-#else
-    "push %%rbx\n\t"
-    "cpuid\n\t"
-    "mov %%ebx,(%%rsi)\n\t"
-    "mov %%ecx,4(%%rsi)\n\t"
-    "mov %%edx,8(%%rsi)\n\t"
-    "pop %%rbx"
-#endif
-    : "=a" (u), "=c" (foo)
-    : "a" (0x40000000), "c" (0), "S" (signature)
-    : "%edx"
+    "cpuid"
+    : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
+    : "a" (0x40000000), "c" (0)
   );
 
-  signature[12] = 0;
-
-  return u < 0x40000002 || strcmp(signature, "XenVMMXenVMM") ? 0 : 1;
+  return eax >= 0x40000002 &&
+    ebx == 0x566e6558 /* "XenV" */ &&
+    ecx == 0x65584d4d /* "MMXe" */ &&
+    edx == 0x4d4d566e /* "nVMM" */;
 
 #else
 
@@ -4782,13 +4840,6 @@ void assign_hw_class(hd_data_t *hd_data, hd_t *hd)
     hd->sub_class.id == sc_sdev_tape
   ) {
     hd_set_hw_class(hd, hw_tape);
-  }
-
-  if(
-    hd->base_class.id == bc_storage_device &&
-    hd->sub_class.id == sc_sdev_disk
-  ) {
-    hd_set_hw_class(hd, hw_redasd);
   }
 }
 
