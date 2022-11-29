@@ -3,9 +3,9 @@ SUBDIRS		= src
 TARGETS		= hwinfo hwinfo.pc changelog
 CLEANFILES	= hwinfo hwinfo.pc hwinfo.static hwscan hwscan.static hwscand hwscanqueue doc/libhd doc/*~
 LIBS		= -lhd
-SLIBS		= -lhd
+SLIBS		= -lhd -luuid
 TLIBS		= -lhd_tiny
-SO_LIBS		=
+SO_LIBS		= -luuid
 TSO_LIBS	=
 
 export SO_LIBS

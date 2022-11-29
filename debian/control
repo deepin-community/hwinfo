@@ -1,16 +1,20 @@
 Source: hwinfo
-Maintainer: Deepin Developer <deepin-dev@deepin.org>
-Uploaders: Deepin Packages Builder <packages@deepin.org>
+Maintainer: Sebastien Badia <sbadia@debian.org>
+Uploaders: Tomasz Buchert <tomasz@debian.org>
 Section: admin
 Priority: optional
-Build-Depends: debhelper (>= 12),
-               debhelper-compat (= 12),
+Build-Depends: debhelper (>= 13),
+               debhelper-compat (= 13),
                doxygen,
                flex,
                libx86emu-dev [amd64 i386],
-               pkg-config
-Standards-Version: 4.3.0
+               pkg-config,
+               uuid-dev
+Standards-Version: 4.5.1
+Vcs-Browser: https://salsa.debian.org/debian/hwinfo
+Vcs-Git: https://salsa.debian.org/debian/hwinfo.git
 Homepage: https://github.com/openSUSE/hwinfo
+Rules-Requires-Root: no
 
 Package: hwinfo
 Architecture: linux-any

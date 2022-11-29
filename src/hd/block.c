@@ -169,6 +169,25 @@ void get_block_devs(hd_data_t *hd_data)
     }
 
     sf_dev = new_str(hd_read_sysfs_link(sf_cdev, "device"));
+
+    bus_name = NULL;
+    if(
+      (s = hd_read_sysfs_link(sf_dev, "subsystem")) ||
+      (s = hd_read_sysfs_link(sf_dev, "bus"))
+    ) {
+      bus_name = strrchr(s, '/');
+      if(bus_name) bus_name++;
+      bus_name = new_str(bus_name);
+      /* if bus_name is nvme-subsystem reconsider sf_dev value */
+      if(!strcmp(bus_name, "nvme-subsystem")) {
+        for(sl = read_dir(sf_dev, 'l'); sl; sl = sl->next) {
+          if(!strncmp(sl->str, "nvme", 4)) {
+            sf_dev = new_str(hd_read_sysfs_link(sf_dev, sl->str));
+          }
+        }
+      }
+    }
+
     sf_drv_name = NULL;
     sf_drv = hd_read_sysfs_link(sf_dev, "driver");
     if(!sf_drv) {
@@ -185,15 +204,6 @@ void get_block_devs(hd_data_t *hd_data)
     bus_id = sf_dev ? strrchr(sf_dev, '/') : NULL;
     if(bus_id) bus_id++;
 
-    bus_name = NULL;
-    if(
-      (s = hd_read_sysfs_link(sf_dev, "subsystem")) ||
-      (s = hd_read_sysfs_link(sf_dev, "bus"))
-    ) {
-      bus_name = strrchr(s, '/');
-      if(bus_name) bus_name++;
-      bus_name = new_str(bus_name);
-    }
 
     if(sf_dev) {
       ADD2LOG(
@@ -275,6 +285,7 @@ void get_block_devs(hd_data_t *hd_data)
         else if(!strcmp(bus_name, "scsi")) hd->bus.id = bus_scsi;
         else if(!strcmp(bus_name, "pci")) hd->bus.id = bus_pci;
         else if(!strcmp(bus_name, "nvme")) hd->bus.id = bus_pci;
+        else if(!strcmp(bus_name, "nvme-subsystem")) hd->bus.id = bus_pci;
       }
       hd->sysfs_bus_id = new_str(bus_id);
 
@@ -525,36 +536,37 @@ void add_other_sysfs_info(hd_data_t *hd_data, hd_t *hd)
 
   if(hd->sysfs_id) {
     if(
-      sscanf(hd->sysfs_id, "/block/cciss!c%ud%u", &u0, &u1) == 2
+      sscanf(hd->sysfs_id, "/class/block/cciss!c%ud%u", &u0, &u1) == 2
     ) {
       hd->slot = (u0 << 8) + u1;
       str_printf(&hd->device.name, 0, "CCISS disk %u/%u", u0, u1);
     }
     else if(
-      sscanf(hd->sysfs_id, "/block/ida!c%ud%u", &u0, &u1) == 2
+      sscanf(hd->sysfs_id, "/class/block/ida!c%ud%u", &u0, &u1) == 2
     ) {
       hd->slot = (u0 << 8) + u1;
       str_printf(&hd->device.name, 0, "SMART Array %u/%u", u0, u1);
     }
     else if(
-      sscanf(hd->sysfs_id, "/block/rd!c%ud%u", &u0, &u1) == 2
+      sscanf(hd->sysfs_id, "/class/block/rd!c%ud%u", &u0, &u1) == 2
     ) {
       hd->slot = (u0 << 8) + u1;
       str_printf(&hd->device.name, 0, "DAC960 RAID Array %u/%u", u0, u1);
     }
     else if(
-      sscanf(hd->sysfs_id, "/block/i2o!hd%c", &c) == 1 &&
+      sscanf(hd->sysfs_id, "/class/block/i2o!hd%c", &c) == 1 &&
       c >= 'a'
     ) {
       hd->slot = c - 'a';
       str_printf(&hd->device.name, 0, "I2O disk %u", hd->slot);
     }
     else if(
-      sscanf(hd->sysfs_id, "/block/dasd%c", &c) == 1 &&
+      sscanf(hd->sysfs_id, "/class/block/dasd%c", &c) == 1 &&
       c >= 'a'
     ) {
       hd->slot = c - 'a';
       hd->device.name = new_str("S390 Disk");
+      hd_set_hw_class(hd, hw_redasd);
     }
   }
 
@@ -1221,7 +1233,8 @@ void read_partitions(hd_data_t *hd_data)
           hd_data->flags.list_md ||
           (
             strncmp(name, "md", sizeof "md" - 1) &&
-            strncmp(name, "dm-", sizeof "dm-" - 1)
+            strncmp(name, "dm-", sizeof "dm-" - 1) &&
+            strncmp(name, "bcache", sizeof "bcache" - 1)
           )
         )
       ) {
@@ -1276,11 +1289,13 @@ cdrom_info_t *hd_read_cdrom_info(hd_data_t *hd_data, hd_t *hd)
 
   ci = hd->detail->cdrom.data;
 
-  hd->is.notready = 0;
+  fd = open(hd->unix_dev_name, O_RDONLY|O_NONBLOCK);
 
-  if((fd = open(hd->unix_dev_name, O_RDONLY)) < 0) {
-    /* we are here if there is no CD in the drive */
-    hd->is.notready = 1;
+  /* we get CDS_DISK_OK if there is a CD in the drive */
+  hd->is.notready = fd != -1 && ioctl(fd, CDROM_DRIVE_STATUS, 0) == CDS_DISC_OK ? 0 : 1;
+
+  if(hd->is.notready) {
+    if(fd != -1) close(fd);
     return NULL;
   }
 

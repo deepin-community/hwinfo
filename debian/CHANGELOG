@@ -1,3 +1,99 @@
+2022-06-23:	21.82
+	- merge gh#openSUSE/hwinfo#113
+	- Keep NVMe's namespace output consistency when
+	  nvme_core.multipath=1 (bsc#1199948)
+
+2022-04-13:	21.81
+	- merge gh#openSUSE/hwinfo#112
+	- fix bug in determining serial console device name (bsc#1198043)
+
+2021-12-17:	21.80
+	- merge gh#openSUSE/hwinfo#109
+	- fix logic around cdrom detection
+
+2021-12-14:	21.79
+	- merge gh#openSUSE/hwinfo#108
+	- Donot close the open tray after read_cdrom_info.
+	- Donot close the open tray after read.
+
+2021-11-11:	21.78
+	- merge gh#openSUSE/hwinfo#106
+	- Always read numerical 32bit serial number from EDID header.
+	  Override this with ASCII serial number from display descriptor,
+	  if available.
+	- Display numerical 32bit serial number for monitors without serial
+	  number display descriptor
+
+2021-10-01:	21.77
+	- merge gh#openSUSE/hwinfo#105
+	- Use license file from gnu.org
+	- Fix spelling
+	- Add missing final newline
+	- Trim excess whitespace
+	- Simple maintenance improvements
+
+2021-07-23:	21.76
+	- merge gh#openSUSE/hwinfo#104
+	- Fix timezone issue in SOURCE_DATE_EPOCH code
+
+2021-07-02:	21.75
+	- merge gh#openSUSE/hwinfo#100
+	- recognize loongarch64 architecture
+
+2021-05-18:	21.74
+	- merge gh#openSUSE/hwinfo#98
+	- update pci and usb ids
+
+2021-04-13:	21.73
+	- merge gh#openSUSE/hwinfo#95
+	- don't rely on select() updating its timeout arg (bsc#1184339)
+
+2021-01-27:	21.72
+	- merge gh#openSUSE/hwinfo#92
+	- improve getting video mode info (bsc#1181101)
+	- try harder to break out of infinite I/O loops
+
+2020-11-20:	21.71
+	- merge gh#openSUSE/hwinfo#89
+	- rework network device detection on aarch64 (bsc#1177600,
+	  bsc#1177261)
+
+2020-04-21:	21.70
+	- merge gh#openSUSE/hwinfo#86
+	- update pci and usb ids (bsc#1169682)
+	- fix compiler warnings
+
+2020-03-24:	21.69
+	- merge gh#openSUSE/hwinfo#85
+	- fix xen detection (bsc#1167561)
+	- add link to cpuid doc
+
+2020-01-14:	21.68
+	- merge gh#openSUSE/hwinfo#84
+	- the /sbin/udevadm compat symlink is gone
+
+2019-07-19:	21.67
+	- merge gh#openSUSE/hwinfo#81
+	- fix DASD detection (bsc#1136475)
+	- don't include bcache devices
+
+2019-05-23:	21.66
+	- merge gh#openSUSE/hwinfo#80
+	- fix Makefile and allow building for old distros
+
+2019-05-23:	21.65
+	- merge gh#openSUSE/hwinfo#79
+	- return BIOS UUID in decoded (with '-'s) form (bsc#1135819)
+
+2019-03-14:	21.64
+	- Update of pci and usb ids (bsc#1127840) (#77)
+
+2018-12-06:	21.63
+	- merge gh#openSUSE/hwinfo#75
+	- adjust system type detection (bsc#1117982)
+	- rework version number generation in header file
+	- small correction
+
 2018-11-09:	21.62
 	- merge gh#openSUSE/hwinfo#73
 	- update pci and usb ids (fate#326431)
