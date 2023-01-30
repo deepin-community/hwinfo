@@ -1,3 +1,9 @@
+hwinfo (21.82-2) unstable; urgency=medium
+
+  * update the pci and usb ids db
+
+ -- Deepin Packages Builder <deepin@deepin-PC>  Mon 30 Jan 2023 17:01:16 +0800
+
 hwinfo (21.82-1) unstable; urgency=medium
 
   * New upstream version 21.82
