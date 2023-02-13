@@ -1,3 +1,6 @@
+2023-01-30:	21.82
+	- update the pci and usb ids db
+
 2022-06-23:	21.82
 	- merge gh#openSUSE/hwinfo#113
 	- Keep NVMe's namespace output consistency when
