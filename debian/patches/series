@@ -2,3 +2,4 @@
 0002-TIOCGDEV-is-not-supported-by-the-kernel-therefore-we.patch
 0003-Read-BogoMIPS-from-proc-cpuinfo-as-well.patch
 0006-Use-bin-udevadm-which-is-the-Debian-location.patch
+0007-feat-add-touchpad-information-from-input.patch
