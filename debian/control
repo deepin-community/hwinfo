@@ -3,8 +3,8 @@ Maintainer: Sebastien Badia <sbadia@debian.org>
 Uploaders: Tomasz Buchert <tomasz@debian.org>
 Section: admin
 Priority: optional
-Build-Depends: debhelper (>= 13),
-               debhelper-compat (= 13),
+Build-Depends: debhelper (>= 12),
+               debhelper-compat (= 12),
                doxygen,
                flex,
                libx86emu-dev [amd64 i386],
