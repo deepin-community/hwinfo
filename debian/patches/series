@@ -4,3 +4,4 @@
 0006-Use-bin-udevadm-which-is-the-Debian-location.patch
 0007-feat-add-touchpad-information-from-input.patch
 65f640275482c3124b1c6f52a3e6e5e75278c900.patch
+uniontech018_fix_serial_code.patch
