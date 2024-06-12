@@ -145,7 +145,7 @@ typedef enum hw_item {
   hw_isapnp, hw_bridge, hw_hub, hw_scsi, hw_ide, hw_memory, hw_dvb,
   hw_pcmcia, hw_pcmcia_ctrl, hw_ieee1394, hw_ieee1394_ctrl, hw_hotplug,
   hw_hotplug_ctrl, hw_zip, hw_pppoe, hw_wlan, hw_redasd, hw_dsl, hw_block,
-  hw_tape, hw_vbe, hw_bluetooth, hw_fingerprint, hw_mmc_ctrl,
+  hw_tape, hw_vbe, hw_bluetooth, hw_fingerprint, hw_mmc_ctrl, hw_nvme,
   /** append new entries here */
   hw_unknown, hw_all				/**< hw_all must be last */
 } hd_hw_item_t;
@@ -1448,6 +1448,7 @@ typedef enum cpu_arch {
   arch_mips,
   arch_x86_64,
   arch_aarch64,
+  arch_loongarch,
   arch_riscv
 } hd_cpu_arch_t;
 
@@ -2818,6 +2819,21 @@ int hd_write_properties(const char *udi, hal_prop_t *prop);
 int hd_change_status(const char *id, hd_status_t status, const char *config_string);
 int hd_change_config_status(hd_data_t *hd_data, const char *id, hd_status_t status, const char *config_string);
 int hd_read_mmap(hd_data_t *hd_data, char *name, unsigned char *buf, off_t start, unsigned size);
+
+str_list_t *hd_read_file(char *file_name, unsigned start_line, unsigned lines);
+str_list_t *hd_read_dir(char *dir_name, int type);
+unsigned hd_name2eisa_id(char *);
+
+str_list_t *hd_search_str_list(str_list_t *sl, char *str);
+str_list_t *hd_add_str_list(str_list_t **sl, char *str);
+str_list_t *hd_free_str_list(str_list_t *list);
+str_list_t *hd_reverse_str_list(str_list_t *list);
+
+str_list_t *hd_split(char del, const char *str);
+char *hd_join(char *del, str_list_t *str);
+
+hd_t *hd_add_hd_entry(hd_data_t *hd_data, unsigned line, unsigned count);
+char *hd_read_sysfs_link(char *base_dir, char *link_name);
 
 /* implemented in hddb.c */
 
