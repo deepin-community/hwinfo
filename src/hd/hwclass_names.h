@@ -1,3 +1,7 @@
+#ifndef API_SYM
+#define API_SYM		__attribute__((visibility("default")))
+#endif
+
 typedef struct {
   int key;
   char *value;
@@ -59,6 +63,7 @@ static hash_t hw_items[] = {
   { hw_tape,          "tape"                },
   { hw_vbe,           "vesa bios"           },
   { hw_bluetooth,     "bluetooth"           },
+  { hw_nvme,          "nvme"                },
   { hw_unknown,       "unknown"             },
   { 0,                NULL                  }
 };
@@ -82,13 +87,13 @@ char *key2value(hash_t *hash, int id)
 }
 
 
-char *hd_hw_item_name(hd_hw_item_t item)
+API_SYM char *hd_hw_item_name(hd_hw_item_t item)
 {
   return key2value(hw_items, item);
 }
 
 
-hd_hw_item_t hd_hw_item_type(char *name)
+API_SYM hd_hw_item_t hd_hw_item_type(char *name)
 {
   return name ? value2key(hw_items, name) : hw_none;
 }

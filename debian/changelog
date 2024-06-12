@@ -1,3 +1,9 @@
+hwinfo (23.2-0deepin3) unstable; urgency=medium
+
+  * update openSUSE/hwinfo 23.2. 
+
+ -- LiChengGang <lichenggang@uniontech.com>  Wed, 12 Jun 2024 14:19:56 +0800
+
 hwinfo (21.83-0deepin3) unstable; urgency=medium
 
   * add uniontech018_fix_serial_code 
