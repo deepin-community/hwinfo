@@ -29,6 +29,12 @@ typedef struct {
 static int get_probe_flags(int, char **, hd_data_t *);
 static void progress2(char *, char *);
 
+// ##### temporary solution, fix it later!
+str_list_t *read_file(char *file_name, unsigned start_line, unsigned lines);
+str_list_t *search_str_list(str_list_t *sl, char *str);
+str_list_t *add_str_list(str_list_t **sl, char *str);
+char *new_str(const char *);
+
 static unsigned deb = 0;
 static char *log_file = "";
 static char *list = NULL;
@@ -138,7 +144,6 @@ struct option options[] = {
   { "pci", 0, NULL, 1000 + hw_pci },
   { "isapnp", 0, NULL, 1000 + hw_isapnp },
   { "scsi", 0, NULL, 1000 + hw_scsi },
-  { "nvme", 0, NULL, 1000 + hw_nvme },
   { "ide", 0, NULL, 1000 + hw_ide },
   { "bridge", 0, NULL, 1000 + hw_bridge },
   { "hub", 0, NULL, 1000 + hw_hub },
@@ -629,9 +634,6 @@ void do_hw(hd_data_t *hd_data, FILE *f, int hw_item)
       case arch_aarch64:
         s = "AArch64";
         break;
-      case arch_loongarch:
-        s = "LoongArch";
-        break;
       case arch_riscv:
         s = "RISC-V";
         break;
@@ -813,8 +815,8 @@ void help()
     "        all, arch, bios, block, bluetooth, braille, bridge, camera,\n"
     "        cdrom, chipcard, cpu, disk, dsl, dvb, fingerprint, floppy,\n"
     "        framebuffer, gfxcard, hub, ide, isapnp, isdn, joystick, keyboard,\n"
-    "        memory, mmc-ctrl, modem, monitor, mouse, netcard, network, nvme,\n"
-    "        partition, pci, pcmcia, pcmcia-ctrl, pppoe, printer, redasd,\n"
+    "        memory, mmc-ctrl, modem, monitor, mouse, netcard, network, partition,\n"
+    "        pci, pcmcia, pcmcia-ctrl, pppoe, printer, redasd,\n"
     "        reallyall, scanner, scsi, smp, sound, storage-ctrl, sys, tape,\n"
     "        tv, uml, usb, usb-ctrl, vbe, wlan, xen, zip\n"
     "    --short\n"
@@ -1269,8 +1271,8 @@ void dump_packages(hd_data_t *hd_data)
   sl = hddb_get_packages(hd_data);
 
   for(i = 0; xserver3map[i]; i += 2) {
-    if(xserver3map[i + 1] && !search_str_list(sl, xserver3map[i + 1]))
-      add_str_list(&sl, strdup(xserver3map[i + 1]));
+    if (!search_str_list(sl, xserver3map[i + 1]))
+      add_str_list(&sl, new_str(xserver3map[i + 1]));
   }
 
   for(; sl; sl = sl->next) {
@@ -1430,7 +1432,7 @@ void ask_db(hd_data_t *hd_data, char *query)
     }
 
     if(sscanf(sl->str, "vendor=%3s%n", buf, &cnt) >= 1 && !sl->str[cnt]) {
-      u = hd_name2eisa_id(buf);
+      u = name2eisa_id(buf);
       if(u) hd->vendor.id = u;
       tag = TAG_EISA;
       continue;
@@ -1447,7 +1449,7 @@ void ask_db(hd_data_t *hd_data, char *query)
     }
 
     if(sscanf(sl->str, "subvendor=%3s%n", buf, &cnt) >= 1 && !sl->str[cnt]) {
-      u = hd_name2eisa_id(buf);
+      u = name2eisa_id(buf);
       if(u) hd->sub_vendor.id = u;
       tag = TAG_EISA;
       continue;
@@ -1464,7 +1466,7 @@ void ask_db(hd_data_t *hd_data, char *query)
     }
 
     if(sscanf(sl->str, "serial=%255s%n", buf, &cnt) >= 1 && !sl->str[cnt]) {
-      hd->serial = strdup(buf);
+      hd->serial = new_str(buf);
       continue;
     }
 

@@ -1230,6 +1230,8 @@ void int_legacy_geo(hd_data_t *hd_data)
   char *s;
   edd_info_t *ei;
 
+  if(!hd_data->edd) return;
+
   for(hd = hd_data->hd; hd; hd = hd->next) {
     if(
       hd->base_class.id == bc_storage_device &&
@@ -1329,7 +1331,7 @@ void int_update_driver_data(hd_data_t *hd_data, hd_t *hd)
  *
  * Interface function, don't use internally.
  */
-API_SYM void hd_add_driver_data(hd_data_t *hd_data, hd_t *hd)
+void hd_add_driver_data(hd_data_t *hd_data, hd_t *hd)
 {
   char *s;
 

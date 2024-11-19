@@ -287,7 +287,7 @@ static int compare_id(const int *c1, const int *c2) {
 
 /* interface */
 
-API_SYM cdb_isdn_vendor	*hd_cdbisdn_get_vendor(int handle)
+cdb_isdn_vendor	*hd_cdbisdn_get_vendor(int handle)
 {
 	if (!CDBISDN_readhwdb)
 		init_cdbisdn();
@@ -298,7 +298,7 @@ API_SYM cdb_isdn_vendor	*hd_cdbisdn_get_vendor(int handle)
 	return(&cdb_isdnvendor_info[handle]);
 }
 
-API_SYM cdb_isdn_card	*hd_cdbisdn_get_card(int handle)
+cdb_isdn_card	*hd_cdbisdn_get_card(int handle)
 {
 	if (!CDBISDN_readhwdb)
 		init_cdbisdn();
@@ -309,7 +309,7 @@ API_SYM cdb_isdn_card	*hd_cdbisdn_get_card(int handle)
 	return(&cdb_isdncard_info[handle]);
 }
 
-API_SYM cdb_isdn_vario	*hd_cdbisdn_get_vario_from_type(int typ, int subtyp)
+cdb_isdn_vario	*hd_cdbisdn_get_vario_from_type(int typ, int subtyp)
 {
 	cdb_isdn_vario key, *ret;
 	
@@ -324,7 +324,7 @@ API_SYM cdb_isdn_vario	*hd_cdbisdn_get_vario_from_type(int typ, int subtyp)
 	return(ret);
 }
 
-API_SYM cdb_isdn_card	*hd_cdbisdn_get_card_from_type(int typ, int subtyp)
+cdb_isdn_card	*hd_cdbisdn_get_card_from_type(int typ, int subtyp)
 {
 	cdb_isdn_vario	*civ;
 	
@@ -338,7 +338,7 @@ API_SYM cdb_isdn_card	*hd_cdbisdn_get_card_from_type(int typ, int subtyp)
 	return(NULL);
 }
 
-API_SYM cdb_isdn_card	*hd_cdbisdn_get_card_from_id(int vendor, int device, int subvendor, int subdevice)
+cdb_isdn_card	*hd_cdbisdn_get_card_from_id(int vendor, int device, int subvendor, int subdevice)
 {
 	int key, *ret;	
 
@@ -367,7 +367,7 @@ API_SYM cdb_isdn_card	*hd_cdbisdn_get_card_from_id(int vendor, int device, int s
 	return(&cdb_isdncard_info[*ret]);
 }
 
-API_SYM cdb_isdn_vario *hd_cdbisdn_get_vario(int handle)
+cdb_isdn_vario *hd_cdbisdn_get_vario(int handle)
 {
 	if (!CDBISDN_readhwdb)
 		init_cdbisdn();
@@ -378,21 +378,21 @@ API_SYM cdb_isdn_vario *hd_cdbisdn_get_vario(int handle)
 	return(&cdb_isdnvario_info[handle]);
 }
 
-API_SYM int	hd_cdbisdn_get_version(void)
+int	hd_cdbisdn_get_version(void)
 {
 	if (!CDBISDN_readhwdb)
 		init_cdbisdn();
 	return(CDBISDN_VERSION);
 }
 
-API_SYM int	hd_cdbisdn_get_db_version(void)
+int	hd_cdbisdn_get_db_version(void)
 {
 	if (!CDBISDN_readhwdb)
 		init_cdbisdn();
 	return(cdb_dbversion);
 }
 
-API_SYM char	*hd_cdbisdn_get_db_date(void)
+char	*hd_cdbisdn_get_db_date(void)
 {
 	if (!CDBISDN_readhwdb)
 		init_cdbisdn();

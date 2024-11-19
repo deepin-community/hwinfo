@@ -1,34 +1,9 @@
-hwinfo (23.2-0deepin3) unstable; urgency=medium
+hwinfo (21.82-1.1) unstable; urgency=medium
 
-  * update openSUSE/hwinfo 23.2. 
+  * Non-maintainer upload.
+  * Rename libraries for 64-bit time_t transition.  Closes: #1063119
 
- -- LiChengGang <lichenggang@uniontech.com>  Wed, 12 Jun 2024 14:19:56 +0800
-
-hwinfo (21.83-0deepin3) unstable; urgency=medium
-
-  * add uniontech018_fix_serial_code 
-
- -- LiChengGang <lichenggang@uniontech.com>  Fri, 19 Jan 2024 13:19:51 +0800
-
-hwinfo (21.83-0deepin2) unstable; urgency=medium
-
-  * update openSUSE/hwinfo 21.83.
-
- -- LiChengGang <lichenggang@uniontech.com>  Wed, 03 Jan 2024 21:19:27 +0800
-
-hwinfo (21.82-2deepin1) unstable; urgency=medium
-
-  [ shuaijie ]
-  * feat: add touchpad information from input.
-    some proc file handle no mouse may miss touchpad.
-
- -- Tianyu Chen <sweetyfish@deepin.org>  Wed, 11 Oct 2023 17:31:51 +0800
-
-hwinfo (21.82-2) unstable; urgency=medium
-
-  * update the pci and usb ids db
-
- -- Deepin Packages Builder <deepin@deepin-PC>  Mon 30 Jan 2023 17:01:16 +0800
+ -- Benjamin Drung <bdrung@debian.org>  Fri, 01 Mar 2024 12:10:15 +0000
 
 hwinfo (21.82-1) unstable; urgency=medium
 

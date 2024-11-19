@@ -100,5 +100,3 @@
  bus.id			0x95
 +bus.name		ND
 
- bus.id			0x96
-+bus.name		NVME

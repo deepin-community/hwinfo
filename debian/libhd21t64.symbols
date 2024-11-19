@@ -1,4 +1,4 @@
-libhd.so.21 libhd21 #MINVER#
+libhd.so.21 libhd21t64 #MINVER#
  CDBISDN_DATE@Base 21.0
  CDBISDN_DBVERSION@Base 21.0
  Dir_xlate@Base 21.0

@@ -284,34 +284,10 @@ void get_block_devs(hd_data_t *hd_data)
         if(!strcmp(bus_name, "ide")) hd->bus.id = bus_ide;
         else if(!strcmp(bus_name, "scsi")) hd->bus.id = bus_scsi;
         else if(!strcmp(bus_name, "pci")) hd->bus.id = bus_pci;
-        else if(!strcmp(bus_name, "nvme")) hd->bus.id = bus_nvme;
-        else if(!strcmp(bus_name, "nvme-subsystem")) hd->bus.id = bus_nvme;
+        else if(!strcmp(bus_name, "nvme")) hd->bus.id = bus_pci;
+        else if(!strcmp(bus_name, "nvme-subsystem")) hd->bus.id = bus_pci;
       }
       hd->sysfs_bus_id = new_str(bus_id);
-
-      // add model name, if available
-      if((s = get_sysfs_attr_by_path(sf_dev, "model"))) {
-        char *cs = canon_str(s, strlen(s));
-        ADD2LOG("    model = %s\n", cs);
-        if(*cs) {
-          hd->device.name = cs;
-        }
-        else {
-          free_mem(cs);
-        }
-      }
-
-      // add serial, if available
-      if((s = get_sysfs_attr_by_path(sf_dev, "serial"))) {
-        char *cs = canon_str(s, strlen(s));
-        ADD2LOG("    serial = %s\n", cs);
-        if(*cs) {
-          hd->serial = cs;
-        }
-        else {
-          free_mem(cs);
-        }
-      }
 
       if((s = hd_sysfs_id(sf_dev))) {
 
@@ -367,7 +343,7 @@ void get_block_devs(hd_data_t *hd_data)
       if(hd->bus.id == bus_ide) {
         add_ide_sysfs_info(hd_data, hd);
       }
-      else if(hd->bus.id == bus_scsi || hd->bus.id == bus_pci || hd->bus.id == bus_nvme) {
+      else if(hd->bus.id == bus_scsi || hd->bus.id == bus_pci) {
         /*
          * In case there's no data in the 'device' subdir but in
          * 'device/device', try one level deeper (for some capricious
@@ -782,12 +758,7 @@ void add_scsi_sysfs_info(hd_data_t *hd_data, hd_t *hd, char *sf_dev)
     hd->func = u3;
   }
 
-  if(hd->sysfs_bus_id && sscanf(hd->sysfs_bus_id, "nvme%u", &u0) == 1) {
-    hd->slot = u0;
-  }
-
-  // Looks like PCI device?
-  if(get_sysfs_attr_by_path(sf_dev, "subsystem_vendor")) {
+  if(hd->bus.id == bus_pci) {
     if(hd_attr_uint(get_sysfs_attr_by_path(sf_dev, "vendor"), &ul0, 0)) {
       ADD2LOG("    vendor = 0x%x\n", (unsigned) ul0);
       hd->vendor.id = MAKE_ID(TAG_PCI, ul0 & 0xffff);
@@ -1295,7 +1266,7 @@ void read_partitions(hd_data_t *hd_data)
  * Read iso9660/el torito info, if there is a CD inserted.
  * Returns NULL if nothing was found
  */
-API_SYM cdrom_info_t *hd_read_cdrom_info(hd_data_t *hd_data, hd_t *hd)
+cdrom_info_t *hd_read_cdrom_info(hd_data_t *hd_data, hd_t *hd)
 {
   int fd;
   char *s;
