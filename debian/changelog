@@ -1,3 +1,9 @@
+hwinfo (23.2-0deepin4) unstable; urgency=medium
+
+  * update the pci and usb ids db.
+
+ -- Wang Yu <wangyu@uniontch.com>  Thu, 20 Feb 2025 20:14:43 +0800
+
 hwinfo (23.2-0deepin3) unstable; urgency=medium
 
   * update openSUSE/hwinfo 23.2. 
