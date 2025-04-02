@@ -1,0 +1,228 @@
+Index: hwinfo/src/hd/block.c
+===================================================================
+--- hwinfo.orig/src/hd/block.c
++++ hwinfo/src/hd/block.c
+@@ -589,6 +589,7 @@ void add_other_sysfs_info(hd_data_t *hd_
+       c >= 'a'
+     ) {
+       hd->slot = c - 'a';
++      free_mem(hd->device.name);
+       hd->device.name = new_str("S390 Disk");
+       hd_set_hw_class(hd, hw_redasd);
+     }
+@@ -636,6 +637,7 @@ void add_ide_sysfs_info(hd_data_t *hd_da
+     if((sl = read_file(fname, 0, 1))) {
+       hd->vendor.name = canon_str(sl->str, strlen(sl->str));
+       if((s = strchr(hd->vendor.name, ' '))) {
++        free_mem(hd->device.name);
+         hd->device.name = canon_str(s, strlen(s));
+         if(*hd->device.name) {
+           *s = 0;
+@@ -825,6 +827,7 @@ void add_scsi_sysfs_info(hd_data_t *hd_d
+     cs = canon_str(s, strlen(s));
+     ADD2LOG("    model = %s\n", cs);
+     if(*cs) {
++      free_mem(hd->device.name);
+       hd->device.name = cs;
+     }
+     else {
+Index: hwinfo/src/hd/hd.c
+===================================================================
+--- hwinfo.orig/src/hd/hd.c
++++ hwinfo/src/hd/hd.c
+@@ -1379,7 +1379,7 @@ hd_detail_t *free_hd_detail(hd_detail_t
+         free_mem(s->model);
+         free_mem(s->serial);
+         free_mem(s->lang);
+-
++        free_mem(s->formfactor);
+         free_mem(s);
+       }
+       break;
+@@ -1433,6 +1433,7 @@ hd_t *free_hd_entry(hd_t *hd)
+   free_mem(hd->udi);
+   free_mem(hd->block0);
+   free_mem(hd->driver);
++  free_mem(hd->driver_module);
+   free_str_list(hd->drivers);
+   free_str_list(hd->driver_modules);
+   free_mem(hd->old_unique_id);
+@@ -1451,6 +1452,7 @@ hd_t *free_hd_entry(hd_t *hd)
+   free_str_list(hd->requires);
+ 
+   free_mem(hd->modalias);
++  free_mem(hd->label);
+ 
+   hd_free_hal_properties(hd->hal_prop);
+   hd_free_hal_properties(hd->persistent_prop);
+@@ -5029,6 +5031,10 @@ void create_model_name(hd_data_t *hd_dat
+ 
+   str_printf(&hd->model, 0, "%s%s%s", part1, part2 ? " " : "", part2 ? part2 : "");
+ 
++  if (part1 && part1 != vend && part1 != dev && part1 != compat
++    && part1 != dev_class && part1 != hw_class) {
++    free_mem(part1);
++  }
+   free_mem(vend);
+   free_mem(dev);
+   free_mem(compat);
+Index: hwinfo/src/hd/hddb.c
+===================================================================
+--- hwinfo.orig/src/hd/hddb.c
++++ hwinfo/src/hd/hddb.c
+@@ -185,6 +185,8 @@ modinfo_t *parse_modinfo(str_list_t *fil
+   for(m = modinfo, sl = file; sl; sl = sl->next) {
+     if(sscanf(sl->str, "alias %255s %255s", alias, module) != 2) continue;
+ 
++    m->module = free_mem(m->module);
++    m->alias = free_mem(m->alias);
+     m->module = new_str(module);
+     m->alias = new_str(alias);
+     m->type = mi_other;
+@@ -2019,6 +2021,7 @@ API_SYM void hddb_add_info(hd_data_t *hd
+     if((hs2.value & (1 << he_vendor_name))) {
+       hd->sub_vendor.name = new_str(hs2.vendor.name);
+     }
++    free_str_list(hs2.driver);
+   }
+ 
+   /* look for compat device name */
+@@ -2045,6 +2048,7 @@ API_SYM void hddb_add_info(hd_data_t *hd
+     if((hs2.value & (1 << he_device_name))) {
+       hd->compat_device.name = new_str(hs2.device.name);
+     }
++    free_str_list(hs2.driver);
+   }
+ 
+   /* get package info for compat device id */
+@@ -2063,6 +2067,7 @@ API_SYM void hddb_add_info(hd_data_t *hd
+     if((hs2.value & (1 << he_requires))) {
+       hd->requires = hd_split('|', hs2.requires);
+     }
++    free_str_list(hs2.driver);
+   }
+ 
+   /* get driver info */
+Index: hwinfo/src/hd/monitor.c
+===================================================================
+--- hwinfo.orig/src/hd/monitor.c
++++ hwinfo/src/hd/monitor.c
+@@ -387,7 +387,9 @@ void add_edid_info(hd_data_t *hd_data, h
+       case 0xfc:
+         if(edid[i + 5]) {
+           /* name entry is splitted some times */
+-          str_printf(&name, -1, "%s%s", name ? " " : "", canon_str(edid + i + 5, 0xd));
++          char *tmp = canon_str(edid + i + 5, 0xd);
++          str_printf(&name, -1, "%s%s", name ? " " : "", tmp);
++          free_mem(tmp);
+         }
+         break;
+ 
+Index: hwinfo/src/hd/net.c
+===================================================================
+--- hwinfo.orig/src/hd/net.c
++++ hwinfo/src/hd/net.c
+@@ -598,11 +598,20 @@ hd_res_t *get_phwaddr(hd_data_t *hd_data
+   phwaddr->cmd = ETHTOOL_GPERMADDR;
+   phwaddr->size = MAX_ADDR_LEN;
+ 
+-  if(!hd->unix_dev_name) return res;
++  if(!hd->unix_dev_name) {
++    free_mem(phwaddr);
++    return res;
++  }
+ 
+-  if(strlen(hd->unix_dev_name) > sizeof ifr.ifr_name - 1) return res;
++  if(strlen(hd->unix_dev_name) > sizeof ifr.ifr_name - 1) {
++    free_mem(phwaddr);
++    return res;
++  }
+ 
+-  if((fd = socket(PF_INET, SOCK_DGRAM, 0)) == -1) return res;
++  if((fd = socket(PF_INET, SOCK_DGRAM, 0)) == -1) {
++    free_mem(phwaddr);
++    return res;
++  }
+ 
+   /* get permanent hardware addr */
+   memset(&ifr, 0, sizeof ifr);
+@@ -635,6 +644,7 @@ hd_res_t *get_phwaddr(hd_data_t *hd_data
+   }
+ 
+   close(fd);
++  free_mem(phwaddr);
+ 
+   return res;
+ }
+Index: hwinfo/src/hd/pci.c
+===================================================================
+--- hwinfo.orig/src/hd/pci.c
++++ hwinfo/src/hd/pci.c
+@@ -1097,7 +1097,7 @@ void hd_read_platform(hd_data_t *hd_data
+         s = hd_sysfs_find_driver(hd_data, hd->sysfs_id, 1);
+         if(s) add_str_list(&hd->drivers, s);
+       }
+-      free_str_list(sf_eth_dev);
++      sf_eth_dev = free_str_list(sf_eth_dev);
+       free_mem(device_type);
+       free_mem(platform_type);
+     }
+@@ -1108,6 +1108,8 @@ void hd_read_platform(hd_data_t *hd_data
+   free_str_list(net_list);
+ 
+   free_str_list(sf_bus);
++  free_str_list(sf_bus_canonical);
++  free_str_list(sf_eth_dev);
+ }
+ 
+ 
+Index: hwinfo/src/hd/pppoe.c
+===================================================================
+--- hwinfo.orig/src/hd/pppoe.c
++++ hwinfo/src/hd/pppoe.c
+@@ -641,6 +641,7 @@ void hd_scan_pppoe(hd_data_t *hd_data2)
+       );
+     }
+   }
++  free_mem(conn);
+ }
+ 
+ /** @} */
+Index: hwinfo/src/hd/serial.c
+===================================================================
+--- hwinfo.orig/src/hd/serial.c
++++ hwinfo/src/hd/serial.c
+@@ -139,6 +139,9 @@ void hd_scan_serial(hd_data_t *hd_data)
+     }
+   }
+ 
++  for(i = 0; i < (int) skip_devs; i++) {
++    skip_dev[i] = free_mem(skip_dev[i]);
++  }
+   for(ser = hd_data->serial; ser; ser = next) {
+     next = ser->next;
+ 
+Index: hwinfo/src/hd/usb.c
+===================================================================
+--- hwinfo.orig/src/hd/usb.c
++++ hwinfo/src/hd/usb.c
+@@ -356,8 +356,7 @@ void get_usb_devs(hd_data_t *hd_data)
+   }
+ 
+   remove_tagged_hd_entries(hd_data);
+-
+-
++  usb_devs = free_str_list(usb_devs);
+ }
+ 
+ 
+@@ -592,6 +591,9 @@ void add_input_dev(hd_data_t *hd_data, c
+           hd->unix_dev_name = t;
+           hd->unix_dev_num = dev_num;
+         }
++        else {
++          free_mem(t);
++        }
+       }
+       else {
+         free_mem(hd->unix_dev_name);
