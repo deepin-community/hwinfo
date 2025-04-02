@@ -1,3 +1,9 @@
+hwinfo (23.2-0deepin5) unstable; urgency=medium
+
+  * fix memory leaks in hardware detection.
+
+ -- Wang Yu <wangyu@uniontch.com>  Wed, 02 Apr 2025 16:20:38 +0800
+
 hwinfo (23.2-0deepin4) unstable; urgency=medium
 
   * update the pci and usb ids db.
