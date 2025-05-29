@@ -1,3 +1,9 @@
+hwinfo (23.2-0deepin6) unstable; urgency=medium
+
+  * feat: add sw64 support.
+
+ -- hudeng <hudeng@deepin.org>  Thu, 29 May 2025 16:04:15 +0800
+
 hwinfo (23.2-0deepin5) unstable; urgency=medium
 
   * fix memory leaks in hardware detection.
