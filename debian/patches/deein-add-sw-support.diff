@@ -1,0 +1,188 @@
+From f6ed9d197feac61ddf57fe4e0893b86969ad689f Mon Sep 17 00:00:00 2001
+From: hudeng <hudeng@deepin.org>
+Date: Thu, 12 Jun 2025 11:25:21 +0000
+Subject: [PATCH] feat: add sw64 support
+
+---
+ hwinfo.c        | 9 ++++++---
+ src/hd/hd.c     | 4 ++++
+ src/hd/hd.h     | 3 ++-
+ src/hd/hd_int.h | 2 +-
+ src/hd/hddb.c   | 1 +
+ src/hd/hdp.c    | 3 +++
+ src/hd/isapnp.c | 4 ++--
+ src/hd/isdn.c   | 4 ++--
+ src/hd/misc.c   | 4 ++--
+ 9 files changed, 23 insertions(+), 11 deletions(-)
+
+diff --git a/hwinfo.c b/hwinfo.c
+index bc6e91f..7ef042b 100644
+--- a/hwinfo.c
++++ b/hwinfo.c
+@@ -593,6 +593,9 @@ void do_hw(hd_data_t *hd_data, FILE *f, int hw_item)
+       case arch_alpha:
+         s = "Alpha";
+         break;
++      case arch_sunway:
++        s = "Sunway";
++        break;
+       case arch_sparc:
+         s = "Sparc (32)";
+         break;
+@@ -1234,16 +1237,16 @@ char *xserver3map[] =
+   "VGA16", "xvga16",
+   "RUSH", "xrush",
+ #endif
+-#if defined(__i386__) || defined(__alpha__) || defined(__ia64__)
++#if defined(__i386__) || defined(__alpha__) || defined(__sw_64__) || defined(__ia64__)
+   "SVGA", "xsvga",
+   "3DLABS", "xglint",
+ #endif
+-#if defined(__i386__) || defined(__alpha__)
++#if defined(__i386__) || defined(__alpha__) || defined(__sw_64__)
+   "MACH64", "xmach64",
+   "P9000", "xp9k",
+   "S3", "xs3",
+ #endif
+-#ifdef __alpha__
++#if defined(__alpha__) || defined(__sw_64__)
+   "TGA", "xtga",
+ #endif
+ #ifdef __sparc__
+diff --git a/src/hd/hd.c b/src/hd/hd.c
+index 800163e..86dd9fb 100644
+--- a/src/hd/hd.c
++++ b/src/hd/hd.c
+@@ -114,6 +114,10 @@
+ #define HD_ARCH "axp"
+ #endif
+ 
++#ifdef __sw_64__
++#define HD_ARCH "sw_64"
++#endif
++
+ #ifdef __PPC__
+ #define HD_ARCH "ppc"
+ #endif
+diff --git a/src/hd/hd.h b/src/hd/hd.h
+index 4b14db0..45def72 100644
+--- a/src/hd/hd.h
++++ b/src/hd/hd.h
+@@ -1449,7 +1449,8 @@ typedef enum cpu_arch {
+   arch_x86_64,
+   arch_aarch64,
+   arch_loongarch,
+-  arch_riscv
++  arch_riscv,
++  arch_sunway
+ } hd_cpu_arch_t;
+ 
+ /**
+diff --git a/src/hd/hd_int.h b/src/hd/hd_int.h
+index 4fbd885..5b27cf4 100644
+--- a/src/hd/hd_int.h
++++ b/src/hd/hd_int.h
+@@ -52,7 +52,7 @@
+ #define KERNEL_24		0x020400
+ #define KERNEL_26		0x020600
+ 
+-#if defined(__s390__) || defined(__s390x__) || defined(__alpha__) || defined(LIBHD_TINY)
++#if defined(__s390__) || defined(__s390x__) || defined(__alpha__) || defined(LIBHD_TINY) || defined(__sw_64__)
+ #define WITH_ISDN	0
+ #else
+ #define WITH_ISDN	1
+diff --git a/src/hd/hddb.c b/src/hd/hddb.c
+index 3ab98e0..b418a14 100644
+--- a/src/hd/hddb.c
++++ b/src/hd/hddb.c
+@@ -2284,6 +2284,7 @@ driver_info_t *kbd_driver(hd_data_t *hd_data, hd_t *hd)
+     case arch_intel:
+     case arch_x86_64:
+     case arch_alpha:
++    case arch_sunway:
+       ki->XkbRules = new_str("xfree86");
+       ki->XkbModel = new_str(hd->vendor.id == MAKE_ID(TAG_USB, 0x05ac) ? "macintosh" : "pc104");
+       break;
+diff --git a/src/hd/hdp.c b/src/hd/hdp.c
+index 8dabf81..6662a97 100644
+--- a/src/hd/hdp.c
++++ b/src/hd/hdp.c
+@@ -1081,6 +1081,9 @@ void dump_cpu(hd_data_t *hd_data, hd_t *hd, FILE *f)
+       case arch_alpha:
+ 	dump_line0 ("Alpha\n");
+ 	break;
++      case arch_sunway:
++	dump_line0 ("Sunway\n");
++	break;
+       case arch_sparc:
+ 	dump_line0 ("Sparc (32)\n");
+ 	break;
+diff --git a/src/hd/isapnp.c b/src/hd/isapnp.c
+index a5febfa..13d83a9 100644
+--- a/src/hd/isapnp.c
++++ b/src/hd/isapnp.c
+@@ -15,7 +15,7 @@
+  * @{
+  */
+ 
+-#if defined(__i386__) || defined(__alpha__)
++#if defined(__i386__) || defined(__alpha__) || defined(__sw_64__)
+ 
+ static void get_pnp_devs(hd_data_t *hd_data);
+ 
+@@ -421,7 +421,7 @@ void build_list(hd_data_t *hd_data, str_list_t *isapnp_list)
+ #endif
+ 
+ 
+-#endif /* defined(__i386__) || defined(__alpha__) */
++#endif /* defined(__i386__) || defined(__alpha__) || defined(__sw_64__) */
+ 
+ /** @} **/
+ 
+diff --git a/src/hd/isdn.c b/src/hd/isdn.c
+index c2de98f..ef5f0fe 100644
+--- a/src/hd/isdn.c
++++ b/src/hd/isdn.c
+@@ -18,7 +18,7 @@
+ 
+ #ifndef LIBHD_TINY
+ 
+-#if !defined(__s390__) && !defined(__s390x__) && !defined(__alpha__)
++#if !defined(__s390__) && !defined(__s390x__) && !defined(__alpha__) && !defined(__sw_64__)
+ 
+ void hd_scan_isdn(hd_data_t *hd_data)
+ {
+@@ -307,7 +307,7 @@ cdb_isdn_card *get_dsl_info(hd_t *hd)
+   return NULL;
+ }
+ 
+-#endif		/* !defined(__s390__) && !defined(__s390x__) && !defined(__alpha__) */
++#endif		/* !defined(__s390__) && !defined(__s390x__) && !defined(__alpha__) && !defined(__sw_64__) */
+ 
+ #endif		/* !defined(LIBHD_TINY) */
+ 
+diff --git a/src/hd/misc.c b/src/hd/misc.c
+index ecb241d..8d4417e 100644
+--- a/src/hd/misc.c
++++ b/src/hd/misc.c
+@@ -364,7 +364,7 @@ void hd_scan_misc2(hd_data_t *hd_data)
+     if(i == 0) {
+       /* non-PCI VGA card ??? - really, we shouldn't care... */
+       /* FIX THIS !!! ############### */
+-#ifdef __alpha__
++#if defined(__alpha__) || defined(__sw_64__)
+       free_res_list(res);
+ #else
+       hd = add_hd_entry(hd_data, __LINE__, 0);
+@@ -577,7 +577,7 @@ void read_irqs(misc_t *m)
+       sscanf(sl->str + j, " %*s %99[^\n]", buf) == 1
+     ) {
+ #else
+-#if defined(__alpha__) || defined(__sparc__)
++#if defined(__alpha__) || defined(__sw_64__) || defined(__sparc__)
+     if(sscanf(sl->str + j, " %99[^\n]", buf) == 1) {
+ #else	/* __i386__ || __x86_64__ || __ia64__ */
+     if(sscanf(sl->str + j, " %*s %99[^\n]", buf) == 1) {
+-- 
+2.43.4
+
