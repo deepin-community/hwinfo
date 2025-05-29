@@ -7,3 +7,4 @@
 uniontech018_fix_serial_code.patch
 0010-update-pci-usb-ids.patch
 0011-fix-memory-leaks-in-hardware-detection.patch
+deein-add-sw-support.diff
