@@ -1,0 +1,28 @@
+Description: add USB vendor 0x30fa and 0x3554 info
+Origin: uniontech
+Author: zhanghongyuan
+Last-Update: 2026-07-01
+Bug-Debian: https://bugs.debian.org/
+
+Index: hwinfo/src/ids/src/usb
+===================================================================
+--- hwinfo.orig/src/ids/src/usb
++++ hwinfo/src/ids/src/usb
+@@ -92194,3 +92194,17 @@
+ &device.id		usb 0x0100
+ +device.name		Card Reader Controller RTS5101/RTS5111/RTS5116
+ 
++
++ vendor.id		usb 0x30fa
+++vendor.name		Wuxi Instant Microelectronics Co., Ltd
++
++ vendor.id		usb 0x30fa
++&device.id		usb 0x0300
+++device.name		USB Optical Mouse
++
++ vendor.id		usb 0x3554
+++vendor.name		Shenzhen Jiangmeng Technology Co., Ltd
++
++ vendor.id		usb 0x3554
++&device.id		usb 0xfc03
+++device.name		2.4G Receiver
