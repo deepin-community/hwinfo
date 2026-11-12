@@ -1,3 +1,9 @@
+hwinfo (23.2-0deepin8) unstable; urgency=medium
+
+  * Add USB vendor 0x30fa and 0x3554 device info
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 12 Nov 2026 11:35:00 +0800
+
 hwinfo (23.2-0deepin7) unstable; urgency=medium
 
   * Rebuild with LTO enabled (dpkg vendor feature optimize/lto).
