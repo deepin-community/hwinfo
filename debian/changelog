@@ -1,3 +1,9 @@
+hwinfo (23.2-0deepin9) unstable; urgency=medium
+
+  * Use USB interface association descriptor first when classifying usb devices
+
+ -- zhanghongyuan <zhanghongyuan@uniontech.com>  Thu, 19 Nov 2026 11:53:00 +0800
+
 hwinfo (23.2-0deepin8) unstable; urgency=medium
 
   * Add USB vendor 0x30fa and 0x3554 device info

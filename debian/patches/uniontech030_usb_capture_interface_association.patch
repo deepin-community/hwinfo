@@ -1,0 +1,73 @@
+From 6976580502b3ccf5c94e43fa89d99d88fbdff6b3 Mon Sep 17 00:00:00 2001
+From: Brian McGee <brian@bmcgee.ie>
+Date: Thu, 26 Sep 2024 12:00:57 +0100
+Subject: [PATCH] feat: capture usb interface association
+
+Capture the USB interface association descriptor (IAD) sysfs attributes
+(iad_bFirstInterface/iad_bFunctionClass/iad_bFunctionSubClass/
+iad_bFunctionProtocol/iad_bInterfaceCount) for later use, and fix the
+bAlternateSetting log typo.
+
+(cherry picked from commit 371ccb0852080e85593c4c6b92eb774c61d4aa48)
+
+Backport note: adapted for this tree, which lacks the bAlternateSetting
+block the upstream patch was based on; the block is added here together
+with the corrected log line.
+
+Origin: upstream, https://github.com/opensuse/hwinfo/commit/6976580502b3ccf5c94e43fa89d99d88fbdff6b3
+Last-Update: 2026-11-19
+---
+Index: b/src/hd/hd.h
+===================================================================
+--- a/src/hd/hd.h
++++ b/src/hd/hd.h
+@@ -1084,6 +1084,8 @@ typedef struct usb_s {
+   memory_range_t raw_descr;
+   int d_cls, d_sub, d_prot;
+   int i_alt, i_cls, i_sub, i_prot;
++  int iad_f_cls, iad_f_sub, iad_f_prot;
++  int iad_i_count, iad_i_first;
+   unsigned country;
+ } usb_t;
+ 
+Index: b/src/hd/usb.c
+===================================================================
+--- a/src/hd/usb.c
++++ b/src/hd/usb.c
+@@ -160,6 +160,36 @@ void get_usb_devs(hd_data_t *hd_data)
+         ADD2LOG("    bInterfaceProtocol = %u\n", usb->i_prot);
+       }
+ 
++      if(hd_attr_uint(get_sysfs_attr_by_path(sf_dev, "bAlternateSetting"), &ul0, 16)) {
++        usb->i_alt = ul0;
++        ADD2LOG("    bAlternateSetting = %u\n", usb->i_alt);
++      }
++
++      if(hd_attr_uint(get_sysfs_attr_by_path(sf_dev, "iad_bFirstInterface"), &ul0, 16)) {
++        usb->iad_i_first = ul0;
++        ADD2LOG("    iad_bFirstInterface = %u\n", usb->iad_i_first);
++      }
++
++      if(hd_attr_uint(get_sysfs_attr_by_path(sf_dev, "iad_bFunctionClass"), &ul0, 16)) {
++        usb->iad_f_cls = ul0;
++        ADD2LOG("    iad_bFunctionClass = %u\n", usb->iad_f_cls);
++      }
++
++      if(hd_attr_uint(get_sysfs_attr_by_path(sf_dev, "iad_bFunctionSubClass"), &ul0, 16)) {
++        usb->iad_f_sub = ul0;
++        ADD2LOG("    iad_bFunctionSubClass = %u\n", usb->iad_f_sub);
++      }
++
++      if(hd_attr_uint(get_sysfs_attr_by_path(sf_dev, "iad_bFunctionProtocol"), &ul0, 16)) {
++        usb->iad_f_prot = ul0;
++        ADD2LOG("    iad_bFunctionProtocol = %u\n", usb->iad_f_prot);
++      }
++
++      if(hd_attr_uint(get_sysfs_attr_by_path(sf_dev, "iad_bInterfaceCount"), &ul0, 16)) {
++        usb->iad_i_count = ul0;
++        ADD2LOG("    iad_bInterfaceCount = %u\n", usb->iad_i_count);
++      }
++
+       /* device has longest matching sysfs id */
+       u2 = strlen(sf_dev);
+       s = NULL;

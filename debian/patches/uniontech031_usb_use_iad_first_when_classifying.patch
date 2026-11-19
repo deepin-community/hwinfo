@@ -1,0 +1,45 @@
+From b8165988b939864e300bff1b114ef8cca1a6ea93 Mon Sep 17 00:00:00 2001
+From: Brian McGee <brian@bmcgee.ie>
+Date: Thu, 26 Sep 2024 12:36:41 +0100
+Subject: [PATCH] feat: use interface association descriptor first when
+ classifying usb devices
+
+When an interface belongs to a USB association (IAD), classify it by the
+IAD function class instead of the device class. UAC2 composite audio
+devices report device class 0xEF (Misc/IAD) which has no case in
+set_class_entries(), so they ended up as "Unclassified device" and
+deepin-devicemanager could not list them as audio devices (e.g. Lenovo
+17aa:3507 "Generic USB Audio" on KaiTianM90h).
+
+Also classify USB video interfaces (class 0x0e) as camera.
+
+Origin: upstream, https://github.com/opensuse/hwinfo/commit/b8165988b939864e300bff1b114ef8cca1a6ea93
+Last-Update: 2026-11-19
+---
+Index: b/src/hd/usb.c
+===================================================================
+--- a/src/hd/usb.c
++++ b/src/hd/usb.c
+@@ -396,7 +396,10 @@ void set_class_entries(hd_data_t *hd_dat
+   int cls, sub, prot;
+   unsigned u;
+ 
+-  if(usb->d_cls) {
++  if(usb->iad_i_count) {
++    cls = usb->iad_f_cls; sub = usb->iad_f_sub; prot = usb->iad_f_prot;
++  }
++  else if(usb->d_cls) {
+     cls = usb->d_cls; sub = usb->d_sub; prot = usb->d_prot;
+   }
+   else {
+@@ -485,6 +488,10 @@ void set_class_entries(hd_data_t *hd_dat
+       hd->base_class.id = bc_chipcard;
+       break;
+ 
++    case 0x0e:
++      hd->base_class.id = bc_camera;
++      break;
++
+     case 0xe0:
+       if(sub == 1 && prot == 1) {
+         hd->base_class.id = bc_bluetooth;

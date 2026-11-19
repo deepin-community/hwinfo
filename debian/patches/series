@@ -9,3 +9,5 @@ uniontech018_fix_serial_code.patch
 0011-fix-memory-leaks-in-hardware-detection.patch
 deein-add-sw-support.diff
 uniontech029_add_usb_vendor_0x30fa_0x3554_info.patch
+uniontech030_usb_capture_interface_association.patch
+uniontech031_usb_use_iad_first_when_classifying.patch
